@@ -10,8 +10,7 @@ import { getOctoClient } from './clients'
 export async function createThreadMainMessageSurface(
   inputs: z.infer<typeof InputSchema>
 ): Promise<SlackMessageDto> {
-  const commitMessages = await getAssociatedCommitMessages(inputs.before_ref)
-
+  // const commitMessages = await getAssociatedCommitMessages(inputs.before_ref)
   const message = Message({
     channel: inputs.channel_id,
     text: match(inputs.phase)
@@ -32,7 +31,6 @@ export async function createThreadMainMessageSurface(
       Blocks.Section({
         text: dedent`
           ${Md.group(inputs.group_id)}
-          ${Md.listBullet(commitMessages)}
           `
       })
     )
