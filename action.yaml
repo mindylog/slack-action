@@ -1,0 +1,38 @@
+name: '배포 알리미'
+description: '마인디 서비스들 배포 알림을 위한 액션입니다.'
+author: mindylog
+branding:
+  icon: 'bell'
+  color: 'blue'
+
+inputs:
+  service_name:
+    description: '서비스명'
+    required: true
+  environment:
+    description: '배포 환경 (test, stage, prod)'
+    required: true
+  channel_id:
+    description: '배포 알림 채널 ID'
+    required: true
+  group_id:
+    description: '멘션할 슬랙 그룹 ID'
+    required: true
+    default: 'S081C1ECZ5H'
+  phase:
+    description: '액션 타입 (start, finish)'
+    required: true
+  before_ref:
+    description: '배포 이전 커밋 SHA (github.event.before)'
+    required: true
+  thread_ts:
+    description: 'Thread timestamp'
+    required: false
+
+outputs:
+  thread_ts:
+    description: Thread timestamp ('start' phase에서만 출력)
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

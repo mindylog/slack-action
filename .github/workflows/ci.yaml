@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Start Action
+        id: test-start-action
+        uses: ./
+        with:
+          channel_id: C0814HWQKKP
+          phase: 'start'
+          service_name: slack-action
+          environment: dev
+          before_ref: ${{ github.event.before }}
+        env:
+          SLACKBOT_TOKEN: ${{ secrets.SLACKBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print Start Action Output
+        id: message_id
+        run: echo "${{ steps.test-start-action.outputs.message_id }}"
+
+      - name: Sleep for 5 seconds
+        run: sleep 5s
+        shell: bash
+
+      - name: Test Finish Action
+        id: test-finish-action
+        uses: ./
+        with:
+          channel_id: C0814HWQKKP
+          phase: 'finish'
+          service_name: slack-action
+          environment: dev
+          before_ref: ${{ github.event.before }}
+          thread_ts: ${{ steps.test-start-action.outputs.thread_ts }}
+        env:
+          SLACKBOT_TOKEN: ${{ secrets.SLACKBOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
